@@ -1,14 +1,14 @@
-variable "pm__api_url" {
+variable "pve__endpoint" {
   type = string
   description = "terraform.tfvars"
 }
 
-variable "pm__user" {
+variable "pve__username" {
   type = string
   description = "terraform.tfvars"
 }
 
-variable "pm__password" {
+variable "pve__password" {
   type = string
   description = "terraform.tfvars"
 }
@@ -16,20 +16,19 @@ variable "pm__password" {
 # ---
 
 terraform {
-  required_version = ">= 0.16"
-
+  required_version = ">= 1.16.0"
   required_providers {
     proxmox = {
-        source = "telmate/proxmox"
-        version = "3.0.2-rc04" # proxmox 9.2.20
+      source  = "bpg/proxmox"
+      version = "~> 0.106"
     }
   }
 }
 
 provider "proxmox" {
-    pm_api_url = var.pm__api_url
-    pm_tls_insecure = true
+  endpoint = var.pve__endpoint
+  username = var.pve__username
+  password = var.pve__password
 
-    pm_user = var.pm__user
-    pm_password = var.pm__password
+  insecure = true
 }
