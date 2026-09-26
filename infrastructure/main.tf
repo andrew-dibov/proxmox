@@ -13,19 +13,7 @@ variable "pve__password" {
   description = "terraform.tfvars"
 }
 
-# ---
-
-variable "pve__node_name" {
-  type = string
-  default = "proxmox"
-}
-
-variable "pve__datastore_id" {
-  type = string
-  default = "storage-zfs"
-}
-
-# ---
+# --- --- ---
 
 terraform {
   required_version = ">= 1.16.0"
@@ -33,10 +21,6 @@ terraform {
     proxmox = {                             
       source  = "bpg/proxmox"
       version = "~> 0.106"
-    }
-    local = {
-      source  = "hashicorp/local"
-      version = "~> 2.6.1"
     }
   }
 }

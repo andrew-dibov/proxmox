@@ -10,14 +10,17 @@ resource "proxmox_network_linux_bond" "net__bond0" {
   depends_on = [proxmox_network_applier.net__finalizer]
 }
 
-resource "proxmox_network_linux_bridge" "net__vmbr1" {
+resource "proxmox_network_linux_bridge" "net__vmbr0" {
   node_name = "proxmox"
 
   name  = "vmbr0"
+  vlan_aware = true
   ports = [proxmox_network_linux_bond.net__bond0.name]
 
   depends_on = [proxmox_network_applier.net__finalizer]
 }
+
+# --- --- ---
 
 resource "proxmox_network_applier" "net__finalizer" {
   node_name = "proxmox"
@@ -31,12 +34,12 @@ resource "proxmox_network_applier" "net__applier" {
   lifecycle {
     replace_triggered_by = [
       proxmox_network_linux_bond.net__bond0,
-      proxmox_network_linux_bridge.net__vmbr1,
+      proxmox_network_linux_bridge.net__vmbr0,
     ]
   }
 
   depends_on = [
     proxmox_network_linux_bond.net__bond0,
-    proxmox_network_linux_bridge.net__vmbr1,
+    proxmox_network_linux_bridge.net__vmbr0,
   ]
 }
