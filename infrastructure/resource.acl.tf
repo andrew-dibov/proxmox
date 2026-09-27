@@ -1,40 +1,26 @@
-resource "proxmox_virtual_environment_role" "role__tnnt10" {
-  role_id = "Tennant10"
+resource "proxmox_acl" "acl__tenant_sdn_zones" {
+  for_each = local.tenants
 
-  privileges = [
-    "VM.Allocate",
-    "VM.Config.CPU",
-    "VM.Config.Memory",
-    "VM.Config.Disk",
-    "VM.Config.Network",
-    "VM.Config.Options",
-    "VM.Config.Cloudinit",
-    "VM.Clone",
-    "VM.PowerMgmt",
-    "VM.Audit",
-    "VM.Console",
-    "Datastore.AllocateSpace",
-    "Datastore.Audit",
-    "Datastore.AllocateTemplate",
-    "SDN.Use",
-  ]
-}
-
-resource "proxmox_virtual_environment_user" "user__tnnt10" {
-  user_id = "tf-tnnt10@pve"
-}
-
-resource "proxmox_acl" "acl__tnnt10_pool" {
-  path      = "/pool/tnnt10"
+  path      = "/sdn/zones/${lower(each.value.name)}"
+  role_id   = proxmox_virtual_environment_role.role__tenant.role_id
+  user_id   = proxmox_virtual_environment_user.user__tenants[each.key].user_id
   propagate = true
-
-  role_id = proxmox_virtual_environment_role.role__tnnt10.id
-  user_id = proxmox_virtual_environment_user.user__tnnt10.id
 }
 
-resource "proxmox_acl" "acl__tnnt10_sdn" {
-  path = "/sdn/zones/tnnt10"
+resource "proxmox_acl" "acl__tenant_vms" {
+  for_each = local.tenants
 
-  role_id = proxmox_virtual_environment_role.role__tnnt10.id
-  user_id = proxmox_virtual_environment_user.user__tnnt10.id
+  path      = "/vms"
+  role_id   = proxmox_virtual_environment_role.role__tenant.role_id
+  user_id   = proxmox_virtual_environment_user.user__tenants[each.key].user_id
+  propagate = true
+}
+
+resource "proxmox_acl" "acl__tenant_storage" {
+  for_each = local.tenants
+
+  path      = "/storage/${var.storage_zfspool__storage0_id}"
+  role_id   = proxmox_virtual_environment_role.role__tenant.role_id
+  user_id   = proxmox_virtual_environment_user.user__tenants[each.key].user_id
+  propagate = false
 }
