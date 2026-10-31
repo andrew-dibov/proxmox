@@ -1,15 +1,3 @@
-variable "vm__ubuntu_id" {
-  type    = number
-  default = 9000
-}
-
-variable "vm__ubuntu_name" {
-  type    = string
-  default = "ubuntu"
-}
-
-# ---
-
 resource "proxmox_download_file" "file__ubuntu_image" {
   node_name    = var.pve__node_name
   datastore_id = "local"
@@ -23,37 +11,81 @@ resource "proxmox_download_file" "file__ubuntu_image" {
 
 # ---
 
+variable "vm__cpu_type" {
+  type    = string
+  default = "x86-64-v2-AES"
+}
+
+variable "vm__disk_interface" {
+  type = string
+  default = "scsi0"
+}
+
+variable "vm__disk_size" {
+  type = number
+  default = 10
+}
+
+# ---
+
+variable "vm__ubuntu_noble_current_id" {
+  type    = number
+  default = 9000
+}
+
+variable "vm__ubuntu_noble_current_name" {
+  type    = string
+  default = "ubuntu"
+}
+
+variable "vm__ubuntu_noble_current_description" {
+  type    = string
+  default = "Ubuntu Noble"
+}
+
+# ---
+
 resource "proxmox_virtual_environment_vm" "vm__ubuntu_noble_current" {
   node_name = var.pve__node_name
 
-  vm_id = var.vm__ubuntu_id
-  name  = var.vm__ubuntu_name
+  vm_id = var.vm__ubuntu_noble_current_id
+
+  name        = var.vm__ubuntu_noble_current_name
+  description = var.vm__ubuntu_noble_current_description
 
   cpu {
     cores = 1
-    type  = "host"
+    type  = var.vm__cpu_type
   }
 
   memory {
-    dedicated = 1024
+    dedicated = 512
   }
 
   disk {
     datastore_id = proxmox_storage_zfspool.storage_zfspool__storage0.id
     import_from  = proxmox_download_file.file__ubuntu_image.id
-    interface    = "scsi0"
-    file_format  = "raw"
-    size         = 20
+    
+    interface    = var.vm__disk_interface
+    size         = 10
   }
 
   initialization {
     datastore_id = proxmox_storage_zfspool.storage_zfspool__storage0.id
+
+    ip_config {
+      ipv4 {
+        address = "dhcp"
+      }
+    }
 
     user_account {
       username = "ubuntu"
       password = "test1234"
       keys     = []
     }
+
+    # user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
   }
 
   agent { enabled = true }
