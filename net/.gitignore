@@ -1,0 +1,10 @@
+**/.terraform/*
+
+.terraform*
+
+*.tfstate
+*.tfstate.*
+
+terraform.tfvars
+
+*.env

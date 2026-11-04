@@ -1,33 +1,53 @@
+output "pve__endpoint" {
+  value     = var.pve__endpoint
+  sensitive = true
+}
+
 output "pve__node_name" {
-  value = var.pve__node_name
-}
-
-output "storage__id" {
-  value = var.storage_zfspool__storage__id
-}
-
-# ---
-
-output "infrastructure__token_id" {
-  value     = proxmox_user_token.user_token__infrastructure.id
-  sensitive = true
-}
-
-output "infrastructure__token_secret" {
-  value     = proxmox_user_token.user_token__infrastructure.value
+  value     = var.pve__node_name
   sensitive = true
 }
 
 # ---
 
-output "network__token_id" {
-  value     = proxmox_user_token.user_token__network.id
+output "net__api_token" {
+  value     = proxmox_user_token.user_token__net.value
   sensitive = true
 }
 
-output "network__token_secret" {
-  value     = proxmox_user_token.user_token__network.value
+output "infra__api_token" {
+  value     = proxmox_user_token.user_token__infra.value
   sensitive = true
 }
 
 # ---
+
+output "paas__storage__storage_id" {
+  value     = proxmox_storage_zfspool.proxmox_storage_zfspool__storage.id
+  sensitive = true
+}
+
+output "paas__storage__images_id" {
+  value     = proxmox_storage_directory.proxmox_storage_directory__images.id
+  sensitive = true
+}
+
+output "paas__storage__snippets_id" {
+  value     = proxmox_storage_directory.proxmox_storage_directory__snippets.id
+  sensitive = true
+}
+
+
+# ---
+
+output "paas__pool__infra_id" {
+  value     = proxmox_virtual_environment_pool.pool__infra.id
+  sensitive = true
+}
+
+# ---
+
+output "paas__template__ubuntu_2204_vm_id" {
+  value     = proxmox_virtual_environment_vm.vm__ubuntu_2204_template.vm_id
+  sensitive = true
+}

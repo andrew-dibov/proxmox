@@ -13,11 +13,9 @@ variable "pve__password" {
   sensitive = true
 }
 
-# ---
-
 variable "pve__node_name" {
-  type    = string
-  default = "proxmox"
+  type      = string
+  sensitive = true
 }
 
 # ---

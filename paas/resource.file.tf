@@ -1,92 +1,109 @@
-resource "proxmox_virtual_environment_file" "vm__ubuntu_22_04__cloud_init" {
+variable "vm__ubuntu_2204__cloud_init__content_type" {
+  type    = string
+  default = "snippets"
+}
+
+variable "vm__ubuntu_2204__cloud_init__postfix" {
+  type    = string
+  default = "-cloudinit.yaml"
+}
+
+resource "proxmox_virtual_environment_file" "vm__ubuntu_2204__cloud_init" {
   node_name = var.pve__node_name
 
-  content_type = "snippets"
-  datastore_id = proxmox_storage_directory.storage_directory__snippets.id
+  content_type = var.vm__ubuntu_2204__cloud_init__content_type
+  datastore_id = proxmox_storage_directory.proxmox_storage_directory__snippets.id
 
   source_raw {
-    data = <<-EOF
+    file_name = "${local.ubuntu_2204__prefix}${var.vm__ubuntu_2204__cloud_init__postfix}"
+    data      = <<-EOF
       #cloud-config
-      hostname: jammy
-      timezone: Asia/Yakutsk
+      hostname: ${local.ubuntu_2204__prefix}-template
+      fqdn: ${local.ubuntu_2204__prefix}-template.local
+
+      timezone: ${local.ubuntu_2204__timezone}
+      locale: en_US.UTF-8
+
+      disable_root: true
+      manage_etc_hosts: true
+      
       users:
-        - name: devops
-          shell: /bin/bash
+        - name: test
+          primary_group: test
+          groups: [adm, sudo]
           sudo: ALL=(ALL) NOPASSWD:ALL
+          lock_passwd: false
+          shell: /bin/bash
+      
       chpasswd:
         expire: false
         users:
-          - {name: devops, password: "test1234", type: text}
+          - {name: test, password: "test1234", type: text}
+      
       package_update: true
+      package_upgrade: false
       packages:
         - qemu-guest-agent
+      
       runcmd:
-        - systemctl enable qemu-guest-agent
-        - systemctl start qemu-guest-agent
+        - systemctl enable --now qemu-guest-agent
+        - systemctl enable --now ssh
     EOF
-
-    file_name = "jammy-cloud-init.yaml"
   }
 }
 
-resource "proxmox_virtual_environment_file" "vm__ubuntu_24_04__cloud_init" {
-  node_name = var.pve__node_name
+# ---
 
-  content_type = "snippets"
-  datastore_id = proxmox_storage_directory.storage_directory__snippets.id
-
-  source_raw {
-    data = <<-EOF
-      #cloud-config
-      hostname: noble
-      timezone: Asia/Yakutsk
-      users:
-        - name: devops
-          shell: /bin/bash
-          sudo: ALL=(ALL) NOPASSWD:ALL
-      chpasswd:
-        expire: false
-        users:
-          - {name: devops, password: "test1234", type: text}
-      package_update: true
-      packages:
-        - qemu-guest-agent
-      runcmd:
-        - systemctl enable qemu-guest-agent
-        - systemctl start qemu-guest-agent
-    EOF
-
-    file_name = "noble-cloud-init.yaml"
-  }
+variable "vm__ubuntu_2404__cloud_init__content_type" {
+  type    = string
+  default = "snippets"
 }
 
-resource "proxmox_virtual_environment_file" "vm__ubuntu_26_04__cloud_init" {
+variable "vm__ubuntu_2404__cloud_init__postfix" {
+  type    = string
+  default = "-cloudinit.yaml"
+}
+
+resource "proxmox_virtual_environment_file" "vm__ubuntu_2404__cloud_init" {
   node_name = var.pve__node_name
 
-  content_type = "snippets"
-  datastore_id = proxmox_storage_directory.storage_directory__snippets.id
+  content_type = var.vm__ubuntu_2404__cloud_init__content_type
+  datastore_id = proxmox_storage_directory.proxmox_storage_directory__snippets.id
 
   source_raw {
-    data = <<-EOF
+    file_name = "${local.ubuntu_2404__prefix}${var.vm__ubuntu_2404__cloud_init__postfix}"
+    data      = <<-EOF
       #cloud-config
-      hostname: resolute
-      timezone: Asia/Yakutsk
+      hostname: ${local.ubuntu_2404__prefix}-template
+      fqdn: ${local.ubuntu_2404__prefix}-template.local
+
+      timezone: ${local.ubuntu_2404__timezone}
+      locale: en_US.UTF-8
+
+      disable_root: true
+      manage_etc_hosts: true
+      
       users:
-        - name: devops
-          shell: /bin/bash
+        - name: test
+          primary_group: test
+          groups: [adm, sudo]
           sudo: ALL=(ALL) NOPASSWD:ALL
+          lock_passwd: false
+          shell: /bin/bash
+      
       chpasswd:
         expire: false
         users:
-          - {name: devops, password: "test1234", type: text}
+          - {name: test, password: "test1234", type: text}
+      
       package_update: true
+      package_upgrade: false
       packages:
         - qemu-guest-agent
+      
       runcmd:
-        - systemctl enable qemu-guest-agent
-        - systemctl start qemu-guest-agent
+        - systemctl enable --now qemu-guest-agent
+        - systemctl enable --now ssh
     EOF
-
-    file_name = "resolute-cloud-init.yaml"
   }
 }

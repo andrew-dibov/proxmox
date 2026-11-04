@@ -18,9 +18,7 @@ variable "node_disk_zfs__pool__raidlevel" {
   default = "raidz"
 }
 
-# ---
-
-resource "proxmox_node_disk_zfs" "node_disk_zfs__pool" {
+resource "proxmox_node_disk_zfs" "node_disk_zfs__mpool" {
   node_name = var.pve__node_name
 
   name      = var.node_disk_zfs__pool__name
@@ -29,6 +27,5 @@ resource "proxmox_node_disk_zfs" "node_disk_zfs__pool" {
 
   cleanup_config = true
   cleanup_disks  = true
-
-  add_storage = false
+  add_storage    = false
 }
