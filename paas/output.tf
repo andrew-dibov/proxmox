@@ -15,8 +15,28 @@ output "net__api_token" {
   sensitive = true
 }
 
+output "net__ssh_username" {
+  value     = "root"
+  sensitive = true
+}
+
+output "net__ssh_private_key" {
+  value     = tls_private_key.tls_private_key__net.private_key_openssh
+  sensitive = true
+}
+
 output "infra__api_token" {
   value     = proxmox_user_token.user_token__infra.value
+  sensitive = true
+}
+
+output "infra__ssh_username" {
+  value     = "root"
+  sensitive = true
+}
+
+output "infra__ssh_private_key" {
+  value     = tls_private_key.tls_private_key__infra.private_key_openssh
   sensitive = true
 }
 
@@ -39,6 +59,11 @@ output "paas__storage__snippets_id" {
 
 
 # ---
+
+output "paas__pool__net_id" {
+  value     = proxmox_virtual_environment_pool.pool__net.id
+  sensitive = true
+}
 
 output "paas__pool__infra_id" {
   value     = proxmox_virtual_environment_pool.pool__infra.id

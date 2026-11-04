@@ -26,6 +26,6 @@ resource "proxmox_node_disk_zfs" "node_disk_zfs__mpool" {
   raidlevel = var.node_disk_zfs__pool__raidlevel
 
   cleanup_config = true
-  cleanup_disks  = true
+  cleanup_disks  = false
   add_storage    = false
 }

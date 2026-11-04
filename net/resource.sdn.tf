@@ -12,6 +12,16 @@ resource "proxmox_sdn_zone_simple" "sdn_zone_simple__zone" {
 
 # ---
 
+variable "sdn_vnet__net__id" {
+  type    = string
+  default = "net"
+}
+
+resource "proxmox_sdn_vnet" "sdn_vnet__net" {
+  zone = proxmox_sdn_zone_simple.sdn_zone_simple__zone.id
+  id   = var.sdn_vnet__net__id
+}
+
 variable "sdn_vnet__infra__id" {
   type    = string
   default = "infra"
@@ -23,6 +33,25 @@ resource "proxmox_sdn_vnet" "sdn_vnet__infra" {
 }
 
 # ---
+
+variable "sdn_subnet__net__cidr" {
+  type    = string
+  default = "10.0.0.0/24"
+}
+
+variable "sdn_subnet__net__gateway" {
+  type    = string
+  default = "10.0.0.1"
+}
+
+resource "proxmox_sdn_subnet" "sdn_subnet__net" {
+  vnet = proxmox_sdn_vnet.sdn_vnet__net.id
+
+  cidr    = var.sdn_subnet__net__cidr
+  gateway = var.sdn_subnet__net__gateway
+
+  snat = true
+}
 
 variable "sdn_subnet__infra__cidr" {
   type    = string
@@ -49,6 +78,8 @@ resource "proxmox_sdn_applier" "sdn_applier" {
   lifecycle {
     replace_triggered_by = [
       proxmox_sdn_zone_simple.sdn_zone_simple__zone,
+      proxmox_sdn_vnet.sdn_vnet__net,
+      proxmox_sdn_subnet.sdn_subnet__net,
       proxmox_sdn_vnet.sdn_vnet__infra,
       proxmox_sdn_subnet.sdn_subnet__infra,
     ]
@@ -56,6 +87,8 @@ resource "proxmox_sdn_applier" "sdn_applier" {
 
   depends_on = [
     proxmox_sdn_zone_simple.sdn_zone_simple__zone,
+    proxmox_sdn_vnet.sdn_vnet__net,
+    proxmox_sdn_subnet.sdn_subnet__net,
     proxmox_sdn_vnet.sdn_vnet__infra,
     proxmox_sdn_subnet.sdn_subnet__infra,
   ]

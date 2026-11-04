@@ -9,6 +9,25 @@ variable "role__net__privileges" {
     "SDN.Allocate",
     "SDN.Audit",
     "SDN.Use",
+
+    "Pool.Allocate",
+    "Datastore.Audit",
+    "Datastore.Allocate",
+    "Datastore.AllocateSpace",
+
+    "VM.Allocate",
+    "VM.Clone",
+    "VM.Audit",
+    "VM.PowerMgmt",
+
+    "VM.Config.CPU",
+    "VM.Config.Memory",
+    "VM.Config.Disk",
+    "VM.Config.CDROM",
+    "VM.Config.Network",
+    "VM.Config.Options",
+    "VM.Config.Cloudinit",
+    "VM.GuestAgent.Audit",
   ]
 }
 
@@ -28,8 +47,10 @@ variable "role__infra__privileges" {
   type = list(string)
   default = [
     "SDN.Use",
+
     "Pool.Allocate",
     "Datastore.Audit",
+    "Datastore.Allocate",
     "Datastore.AllocateSpace",
 
     "VM.Allocate",

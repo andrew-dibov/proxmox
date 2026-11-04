@@ -1,3 +1,8 @@
+variable "pve__ip" {
+  type      = string
+  sensitive = true
+}
+
 variable "pve__endpoint" {
   type      = string
   sensitive = true
@@ -27,6 +32,11 @@ terraform {
     proxmox = {
       source  = "bpg/proxmox"
       version = "0.114.0"
+    }
+
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.0"
     }
   }
 }

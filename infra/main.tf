@@ -23,4 +23,9 @@ provider "proxmox" {
   api_token = data.terraform_remote_state.remote_state__paas.outputs.infra__api_token
 
   insecure = true
+
+  ssh {
+    username    = data.terraform_remote_state.remote_state__paas.outputs.infra__ssh_username
+    private_key = data.terraform_remote_state.remote_state__paas.outputs.infra__ssh_private_key
+  }
 }
